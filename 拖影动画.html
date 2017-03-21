@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>拖影动画</title>
+        <style>
+        	canvas{
+        		border: 1px solid #000;
+        	}
+        </style>
+    </head>
+    <body>
+    	<canvas id="canvas" width="600" height="400"></canvas>
+    	<script>
+    		function toAngle(radian){
+    			return 180*radian/Math.PI;
+    		}
+    		function toRadian(angle){
+    			return Math.PI*angle/180;
+    		}
+    		var canvas=document.getElementById('canvas');
+    		var ctx=canvas.getContext("2d");
+    		var w=canvas.width,h=canvas.height;
+    		ctx.fillStyle="green";
+    		ctx.arc(25,30,20,0,2*Math.PI);
+    		ctx.fill();
+    		var stepX=3;
+    		var stepY=2;
+    		var x=25;
+    		var y=30;
+    		window.requestAnimationFrame(function render(){
+    			if(x+20>canvas.width||x<20){
+    				stepX=-stepX;
+    			}
+    			if(y+20>canvas.height||y<20){
+    				stepY=-stepY;
+    			}
+    			x+=stepX;
+    			y+=stepY*.98+.25;
+    			ctx.save();
+    			ctx.fillStyle="rgba(255, 255, 255, .3)";
+    			ctx.fillRect(0, 0, w, h);
+    			ctx.restore();
+    			ctx.beginPath();
+    			ctx.arc(x,y,20,0,2*Math.PI);
+    			ctx.fill();
+    			window.requestAnimationFrame(render);
+    		})
+    	</script>
+    </body>
+</html>

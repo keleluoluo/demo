@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>appleclock</title>
+        <style>
+        	div{
+        		width: 1000px;
+        		height: 600px;
+        		margin: 0 auto;
+        	}
+        	canvas{
+        		border: 1px solid #000;
+        	}
+        </style>
+    </head>
+    <body>
+    <div>
+    	<canvas id="canvas" width="600" height="400"></canvas>
+    </div>
+    	<script>
+    		function toAnlge(radian){
+    			return 180*radian/Math.PI;
+    		}
+    		function toRadian(angle){
+    			return Math.PI*angle/180;
+    		}
+    		var canvas=document.getElementById('canvas');
+    		var ctx=canvas.getContext("2d");
+    		function clock(){
+    			var w=canvas.width;
+    			var h=canvas.height;
+    			var rw=316,
+    		    	rh=316,
+    		    	rc=40;
+    			ctx.clearRect(0, 0, w, h);
+    			ctx.save();
+    			ctx.translate(w/2, h/2);
+    		//绘制表盘
+    			ctx.beginPath();
+    			ctx.moveTo(-rw/2, -rh/2+rc);
+    			ctx.arcTo(-rw/2, rh/2,rw/2,rh/2,rc);
+    			ctx.arcTo(rw/2, rh/2, rw/2, -rh/2, rc);
+    			ctx.arcTo(rw/2, -rh/2, -rw/2, -rh/2, rc);
+    			ctx.arcTo(-rw/2, -rh/2, -rw/2, -rh/2+rc, rc);
+    			ctx.arc(0,0,150,0,2*Math.PI);
+    			ctx.fill();
+    		//绘制小时刻度
+    			ctx.lineWidth=8;
+    			for(var i=0;i<12;i++){
+    				ctx.save();
+    			ctx.rotate(i*Math.PI/6);
+	    			ctx.beginPath();
+	    			ctx.moveTo(150, 0);
+	    			ctx.lineTo(150-16, 0);
+	    			ctx.stroke();
+	    			ctx.restore();
+	    			ctx.textAlign="center";
+	    			ctx.textBaseline="middle";
+	    			ctx.beginPath();
+	    			ctx.fillText(i+3>12?i+3-12:i+3, (150-16-10)*Math.cos(i*Math.PI/6), (150-16-10)*Math.sin(i*Math.PI/6));
+	    		}
+    		//绘制分/秒刻度
+	    		ctx.save();
+	    		ctx.lineWidth=3;
+	    		for(var i=0;i<60;i++){
+	    			if(i%5!==0){
+	    				ctx.beginPath();
+	    				ctx.moveTo(150, 0);
+	    				ctx.lineTo(150-8, 0);
+	    				ctx.stroke();
+	    			}
+	    			ctx.rotate(Math.PI/30);
+	    		}
+	    		ctx.restore();
+	    		//添加品牌
+	    		ctx.fillText('clock', 0, 90);
+	    		var now=new Date();
+	    		var x,y,hourR=80,minR=100,secR=120;
+	    		var hour=now.getHours(),
+	    		min=now.getMinutes(),
+	    		sec=now.getSeconds();
+	    		ctx.save();
+	    		ctx.rotate(-Math.PI/2);
+	    		ctx.lineCap="round";
+	    		hour=hour>12?hour-12:hour;
+	    		ctx.lineWidth="6";
+	    		x=hourR*Math.cos((hour+min/60+sec/3600)*Math.PI/6);
+	    		y=hourR*Math.sin((hour+min/60+sec/3600)*Math.PI/6);
+	    		ctx.beginPath();
+	    		ctx.moveTo(0, 0);
+	    		ctx.lineTo(x, y);
+	    		ctx.stroke();
+	    		//绘制分针
+	    		ctx.lineWidth=4;
+	    		ctx.lineCap="round";
+	    		x=minR*Math.cos((min+sec/60)*Math.PI/30);
+	    		y=minR*Math.sin((min+sec/60)*Math.PI/30);
+	    		ctx.beginPath();
+	    		ctx.moveTo(0, 0);
+	    		ctx.lineTo(x, y);
+	    		ctx.stroke();
+	    		//绘制秒钟
+	    		ctx.strokeStyle="red";
+	    		ctx.lineWidth=2;
+	    		ctx.lineCap="round";
+	    		x=secR*Math.cos(sec*Math.PI/30);
+	    		y=secR*Math.sin(sec*Math.PI/30);
+	    		ctx.beginPath();
+	    		ctx.moveTo(-x/8, -y/8);
+	    		ctx.lineTo(x, y);
+	    		ctx.stroke();
+	    		ctx.fillStyle="red";
+	    		ctx.beginPath();
+	    		ctx.arc(0,0,8,0,2*Math.PI);
+	    		ctx.fill();
+	    		ctx.restore();
+	    		ctx.restore();
+	    		window.requestAnimationFrame(clock);
+    		}
+            window.requestAnimationFrame(clock);
+    	</script>
+    </body>
+</html>
